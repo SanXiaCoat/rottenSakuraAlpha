@@ -1,0 +1,35 @@
+#pragma once
+#define fieldW 684
+#define fieldH 768
+#define fieldBGw 684
+#define fieldBGh 2048
+#define selfSize 48
+#define enemySize 48
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
+#define ILLUSTRATION_WIDTH 345
+#define ILLUSTRATION_HEIGHT 614
+#define PROFILE_WIDTH 470
+#define PROFILE_HEIGHT 220
+#define titleX 156
+#define titleY 168
+#define titleW 165
+#define titleH 460
+#define menuX 512
+#define menuY 180
+#define menuW 305
+#define menuH 72
+#define menuInflate 24
+#define menuInflateY 5
+#define powerSpeed 300
+#define enemy1BulletSize 8
+#define powerSize 24
+#define fps 100
+#define healthBarW 128
+#define healthBarH 16
+#define bossBarW fieldW - 24
+#define bossBarH 12
+#define chapterSize 288
+#define chapterSizeSelected 320
+#define chapterMax 5
+#define levelIconSize 128
