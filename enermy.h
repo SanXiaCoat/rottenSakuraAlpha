@@ -205,6 +205,7 @@ struct boss1
 
     void moveHorizont(float deltaTime,float maxSpeedX);
     void bulletRevolve(float deltaTime, BattleField& battlefield);
+    void convertBulletsToScores(BattleField& battlefield, float scoreValue);
 };
 
 struct boss1_bullet
@@ -230,7 +231,7 @@ struct boss1_bullet
     bool hasBeenSlowedBySkill2 = false;
     int explosion = 0;
     int poison = 0;
-    Uint32 poisonDuration = 200;
+    Uint32 poisonDuration = 400;
 };
 
 struct boss1_bullet_revolving

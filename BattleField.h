@@ -67,6 +67,7 @@ public:
     void bossGeneratePower(boss1* enemy);
     void deathEffectsUpdate();
     void deathEffectsRender();
+    void ItemToPlayer();
 
     Uint32 startTime;
     Uint32 collect_signStartTime = 0;
@@ -106,7 +107,7 @@ private:
     //字体
     TTF_Font* statusFont;
 
-    int exp = 0;
+    float exp = 0;
 
     //模版与容器
     self_bullet selfBulletTemplate;
@@ -134,7 +135,9 @@ private:
     std::list<death_effect*> deathEffects;
 
     power powerTemplate;
+    scoreItem scoreItemTemplate;
     std::list<power*> powers;
+    std::list<scoreItem*> scoreItems;
 
     background bgTemplate1;
     background bgTemplate2;

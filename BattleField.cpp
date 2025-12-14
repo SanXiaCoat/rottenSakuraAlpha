@@ -143,6 +143,7 @@ void BattleField::init()
     selfBulletTemplate.texture = IMG_LoadTexture(game.getRenderer(), "../assets/images/bullet.png");
 
     powerTemplate.texture = IMG_LoadTexture(game.getRenderer(), "../assets/images/power.png");
+    scoreItemTemplate.texture = IMG_LoadTexture(game.getRenderer(), "../assets/images/scoreItem.png");
 
     bgTemplate1.texture = IMG_LoadTexture(game.getRenderer(), "../assets/images/battleBackground/suburbBG1.png");
     
@@ -207,6 +208,7 @@ void BattleField::update(float deltaTime)
     updateBattleBackground(deltaTime);
     player.skill1(enemy1Bullets);
     deathEffectsUpdate();
+    ItemToPlayer();
 }
 
 void BattleField::render()
@@ -633,6 +635,11 @@ void BattleField::clean()
         SDL_DestroyTexture(powerTemplate.texture);
     }
 
+    if (scoreItemTemplate.texture != nullptr)
+    {
+        SDL_DestroyTexture(scoreItemTemplate.texture);
+    }
+
     if (bgTemplate1.texture != nullptr)
     {
         SDL_DestroyTexture(bgTemplate1.texture);
@@ -670,7 +677,6 @@ void BattleField::clean()
     }   
     
     
-
     if (pauseTextTexture1 != nullptr) 
     {
         SDL_DestroyTexture(pauseTextTexture1);
@@ -1497,6 +1503,42 @@ void BattleField::updatePowers(float deltaTime)
             ++it;
         }
     }
+
+    //对scoreItems进行同样操作
+    for(auto it = scoreItems.begin(); it != scoreItems.end(); )
+    {
+        auto scoreItem = *it;
+        scoreItem->position.x += scoreItem->direction.x * deltaTime;
+        scoreItem->position.y += scoreItem->direction.y * deltaTime;
+
+        scoreItem->sizeTrue = sqrt(scoreItem->value) + 16;
+
+        SDL_Rect scoreItemRect = 
+        {
+            static_cast<int>(scoreItem->position.x),
+            static_cast<int>(scoreItem->position.y),
+            scoreItem->sizeTrue,
+            scoreItem->sizeTrue
+        };
+        if ((scoreItem->position.y > fieldH) ||
+            (scoreItem->position.y < 0 - scoreItem->sizeTrue) ||
+            (scoreItem->position.x < 0 - scoreItem->sizeTrue) ||
+            (scoreItem->position.x > fieldW) )
+        {
+            delete scoreItem;
+            it = scoreItems.erase(it);
+        }
+        else if (SDL_HasIntersection(&playerRect, &scoreItemRect))
+        {
+            exp += scoreItem->value;
+            delete scoreItem;
+            it = scoreItems.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }
 
 void BattleField::renderPowers()
@@ -1511,6 +1553,18 @@ void BattleField::renderPowers()
             power->sizeTrue
         };
         SDL_RenderCopy(game.getRenderer(), power->texture, NULL, &powerRect);
+    }
+
+    for(auto scoreItem : scoreItems)
+    {
+        SDL_Rect scoreItemRect = 
+        {
+            static_cast<int>(scoreItem->position.x),
+            static_cast<int>(scoreItem->position.y),
+            scoreItem->sizeTrue,
+            scoreItem->sizeTrue
+        };
+        SDL_RenderCopy(game.getRenderer(), scoreItem->texture, NULL, &scoreItemRect);
     }
 }
 
@@ -1705,6 +1759,23 @@ void BattleField::deathEffectsRender()
                 effect->height
             };
             SDL_RenderCopy(game.getRenderer(), effect->texture, NULL, &effectRect);
+        }
+    }
+}
+
+void BattleField::ItemToPlayer()
+{
+    //对于scoreItem,如果absorbed为true，则奔向自机
+    for (auto& item : scoreItems)
+    {
+        if (item->absorbed)
+        {
+            auto dx = (player.position.x + player.width / 2.0f) - (item->position.x + item->sizeTrue / 2.0f);
+            auto dy = (player.position.y + player.height / 2.0f) - (item->position.y + item->sizeTrue / 2.0f);
+            auto distance = sqrt(dx * dx + dy * dy);
+            dx /= distance;
+            dy /= distance;
+            item->direction = {1200.0f * dx, 1200.0f * dy};
         }
     }
 }

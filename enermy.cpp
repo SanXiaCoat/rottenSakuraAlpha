@@ -453,8 +453,6 @@ void boss1::card13(BattleField &battlefield)
     battlefield.enemy1Bullets.splice(battlefield.enemy1Bullets.end(), newBullets);
 }
 
-
-
 void boss1::moveHorizont(float deltaTime,float maxSpeedX)
 {
     if (speedX > 0) 
@@ -589,4 +587,24 @@ void boss1::bulletRevolve(float deltaTime, BattleField &battlefield)
             ++it;
         }
     }
+}
+
+void boss1::convertBulletsToScores(BattleField &battlefield,float scoreValue)
+{
+    //所有敌机子弹转化为score,先统计子弹数量
+    int bulletCount = battlefield.enemy1Bullets.size();
+    for (auto it = battlefield.enemy1Bullets.begin(); it != battlefield.enemy1Bullets.end();)
+    {
+        std::visit([&battlefield, &bulletCount, &scoreValue](auto&& bullet) {
+            auto score = new scoreItem(battlefield.scoreItemTemplate);
+            score->position.x = bullet->position.x + (bullet->width - score->width) / 2.0f;
+            score->position.y = bullet->position.y + (bullet->height - score->height) / 2.0f;
+            score->absorbed = true;
+            score->value = scoreValue / static_cast<float>(bulletCount);
+            battlefield.scoreItems.push_back(score);
+            delete bullet;
+        }, *it);
+        it = battlefield.enemy1Bullets.erase(it);
+    }
+    
 }

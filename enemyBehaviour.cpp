@@ -44,7 +44,7 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                     {
                         enemy->bonus1 = true;  
                         battleField->bossGeneratePower(enemy);
-                        battleField->enemy1Bullets.clear();
+                        enemy->convertBulletsToScores(*battleField, 50.0f);
                     }
                     if(enemy->health > enemy->healthMax * 0.5f && enemy->health < enemy->healthMax * 0.75f && currentTime - enemy->lastSpellCardTime > 5000)
                     {
@@ -61,7 +61,7 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                     {
                         enemy->bonus2 = true;  
                         battleField->bossGeneratePower(enemy);
-                        battleField->enemy1Bullets.clear();
+                        enemy->convertBulletsToScores(*battleField, 50.0f);
                         //清除所有非boss敌机
                         for (auto it = battleField->enemies.begin(); it != battleField->enemies.end(); )
                         {
@@ -115,7 +115,7 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                     {
                         enemy->bonus3 = true;  
                         battleField->bossGeneratePower(enemy);
-                        battleField->enemy1Bullets.clear();
+                        enemy->convertBulletsToScores(*battleField, 100.0f);
                     }
                     if(enemy->health <= enemy->healthMax * 0.25f)
                     {
@@ -131,10 +131,9 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                         enemy->phase_left = 2;
                         enemy->health = enemy->healthMax / 2.0f;
                         enemy->defence = 0.2f;
-                        battleField->exp += enemy->score;
                         battleField->player.lives += 1.0f;
                         //清空场上子弹
-                        battleField->enemy1Bullets.clear();
+                        enemy->convertBulletsToScores(*battleField, 100.0f);
                     }
                 }
                 if (enemy->phase_left == 2)
@@ -152,6 +151,7 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                     {
                         enemy->bonus4 = true;  
                         battleField->bossGeneratePower(enemy);
+                        enemy->convertBulletsToScores(*battleField, 100.0f);
                     }
                     if (enemy->health <= 0.25f * enemy->healthMax && fabs(enemy->position.x - fieldW / 2.0f + enemy->width / 2.0f) > 5.0f)
                     {
@@ -178,11 +178,10 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                         enemy->health = enemy->healthMax * 0.33f;
                         
                         enemy->ballCount = 33;
-                        battleField->exp += enemy->score;
                         battleField->player.lives += 1.0f;
                         battleField->player.defence += 0.5f;
                         battleField->player.recoverSpeed += 2.0f;
-                        battleField->enemy1Bullets.clear();
+                        enemy->convertBulletsToScores(*battleField, 100.0f);
                     }
                 }
                 if (enemy->phase_left == 1)
@@ -221,7 +220,7 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                         battleField->bossGeneratePower(enemy);
                         enemy->phase_left = 0;
                         battleField->bossDead = 1;
-                        battleField->exp += enemy->score;
+                        enemy->convertBulletsToScores(*battleField, 200.0f);
                     }
                 }
 
@@ -363,7 +362,7 @@ void EnemyManager::updateEnemyBullets(BattleField* battleField, float deltaTime)
             {
                 if (bullet->poison)
                 {
-                    battleField->player.poisonTime += bullet->poisonDuration;
+                    battleField->player.poisonTime = bullet->poisonDuration;
                 }
                 if (bullet->damage > battleField->player.defence * 1.1f)
                 {
