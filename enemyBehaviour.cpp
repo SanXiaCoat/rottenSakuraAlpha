@@ -121,6 +121,7 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                     {
                         enemy->defence = 0.1f;
                         enemy->card2(*battleField);
+
                         enemy->moveHorizont(deltaTime, 250.0f);
                     }
                     if (enemy->health <= 0)
@@ -198,11 +199,6 @@ void EnemyManager::updateEnemies(BattleField* battleField, float deltaTime)
                     {
                         enemy->card8(*battleField);
                         enemy->lastSpellCard8Time = currentTime;
-                    }
-                    if (currentTime - enemy->lastSpellCard1Time > 5000)
-                    {
-                        enemy->card1(*battleField);
-                        enemy->lastSpellCard1Time = currentTime;
                     }
                     enemy->bulletRevolve(deltaTime, *battleField);
                     float healthPercentage = enemy->health / enemy->healthMax;

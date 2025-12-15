@@ -11,12 +11,12 @@ void boss1::card1(BattleField& battlefield)
         auto projectile = new boss1_bullet(battlefield.boss1BulletTemplate);
         projectile->position.x = position.x + (width - projectile->width) / 2.0f;
         projectile->position.y = position.y + height / 2.0f + 32.0f;
-        projectile->texture = projectile->arrow;
-        projectile->textureAlt = projectile->arrow;
-        projectile->textureSlowed = projectile->arrow;
-        projectile->textureFrozen = projectile->arrow; 
-        projectile->width = 6;
-        projectile->height = 32;
+        projectile->texture = projectile->blue;
+        projectile->textureAlt = projectile->blue;
+        projectile->textureSlowed = projectile->blue;
+        projectile->textureFrozen = projectile->blue; 
+        projectile->width = 10;
+        projectile->height = 16;
         float angle = (i * M_PI / 36.0f) + (i * i * M_PI / 41472.0f); 
         projectile->direction = SDL_FPoint{cos(angle), sin(angle)};
         projectile->speed_ = 100 + (static_cast<int>(pow(i, 1.0f / 2.0f)) * 10);
@@ -61,8 +61,8 @@ void boss1::card2(BattleField& battlefield)
         }
         if (rand() % 12 == 1)
         {
-            projectile->width = 48;
-            projectile->height = 48;
+            projectile->width = 64;
+            projectile->height = 64;
             projectile ->damage = 3;
             projectile->texture = projectile->large;
             projectile->textureAlt = projectile->large;
@@ -104,17 +104,23 @@ void boss1::card3(BattleField& battlefield)
 void boss1::card4(BattleField& battlefield)
 {
     //向玩家的大概方向（偏差-10～10度）随机发射24个子弹，速度较快
-    for(int i=0;i<16;i++)
+    for(int i=0;i<24;i++)
     {
         auto projectile = new boss1_bullet(battlefield.boss1BulletTemplate);
         projectile->position.x = position.x + (width - projectile->width) / 2.0f;
         projectile->position.y = position.y + height / 2.0f + 32;
         float baseAngle = atan2((battlefield.player.position.y + battlefield.player.height / 2.0f) - (position.y + height / 2.0f),
                                 (battlefield.player.position.x + battlefield.player.width / 2.0f) - (position.x + width / 2.0f));
-        float angleOffset = ((rand() % 21) - 10) * M_PI / 180.0f; 
+        float angleOffset = ((rand() % 31) - 15) * M_PI / 180.0f; 
         float angle = baseAngle + angleOffset;
         projectile->direction = SDL_FPoint{cos(angle), sin(angle)};
-        projectile->speed_ = 450 + (rand() % 100);
+        projectile->speed_ = 500 + (rand() % 100);
+        projectile->width = 8;
+        projectile->height = 16;
+        projectile->texture = projectile->blue;
+        projectile->textureAlt = projectile->blue;
+        projectile->textureSlowed = projectile->blue;
+        projectile->textureFrozen = projectile->blue;
         battlefield.enemy1Bullets.push_back(projectile); 
     }
 }
@@ -130,6 +136,8 @@ void boss1::card5(BattleField& battlefield)
         float angle = (i * M_PI / 30.0f);
         projectile->direction = SDL_FPoint{cos(angle), sin(angle)};
         projectile->speed_ = 80 + 0.04*i*i;
+        projectile->width = 12 + 12 * (1 - i / 60.0f);
+        projectile->height = 12 + 12 * (1 - i / 60.0f);
         battlefield.enemy1Bullets.push_back(projectile);
 
         auto projectile_ = new boss1_bullet(battlefield.boss1BulletTemplate);
@@ -138,6 +146,8 @@ void boss1::card5(BattleField& battlefield)
         float angle_ = (i * M_PI / 30.0f + M_PI/2.0f);
         projectile_->direction = SDL_FPoint{cos(angle_), sin(angle_)};
         projectile_->speed_ = 80 + 0.04*i*i;
+        projectile_->width = 12 + 12 * (1 - i / 60.0f);
+        projectile_->height = 12 + 12 * (1 - i / 60.0f);
         battlefield.enemy1Bullets.push_back(projectile_);
 
         auto projectile__ = new boss1_bullet(battlefield.boss1BulletTemplate);
@@ -146,6 +156,8 @@ void boss1::card5(BattleField& battlefield)
         float angle__ = (i * M_PI / 30.0f + M_PI);
         projectile__->direction = SDL_FPoint{cos(angle__), sin(angle__)};
         projectile__->speed_ = 80 + 0.04*i*i;
+        projectile__->width = 12 + 12 * (1 - i / 60.0f);
+        projectile__->height = 12 + 12 * (1 - i / 60.0f);
         battlefield.enemy1Bullets.push_back(projectile__);
 
         auto projectile___ = new boss1_bullet(battlefield.boss1BulletTemplate);
@@ -154,6 +166,8 @@ void boss1::card5(BattleField& battlefield)
         float angle___ = (i * M_PI / 30.0f + M_PI * 1.5f);
         projectile___->direction = SDL_FPoint{cos(angle___), sin(angle___)};
         projectile___->speed_ = 80 + 0.04*i*i;
+        projectile___->width = 12 + 12 * (1 - i / 60.0f);
+        projectile___->height = 12 + 12 * (1 - i / 60.0f);
         battlefield.enemy1Bullets.push_back(projectile___);
 
     }
@@ -226,7 +240,9 @@ void boss1::card8(BattleField &battlefield)
         projectile->position.x = position.x + width / 2.0f + spiralRadius * cos(angle);
         projectile->position.y = position.y + width / 2.0f + spiralRadius * sin(angle) + 32.0f;
         projectile->direction = SDL_FPoint{cos(static_cast<float>(angle + M_PI_2)), sin(static_cast<float>(angle + M_PI_2))}; // 切线方向
-        projectile->speed_ = 100 + 0.2 * i;
+        projectile->speed_ = 100 + 0.1 * i;
+        projectile->width = 14 + (spiralRadius / 15.0f);
+        projectile->height = 14 + (spiralRadius / 15.0f);
         battlefield.enemy1Bullets.push_back(projectile);
     }
 }
@@ -411,7 +427,7 @@ void boss1::card13(BattleField &battlefield)
                     projectile->direction = SDL_FPoint{cos(angle), sin(angle)};
                     projectile->speed_ = 100;
                     projectile->explosion = 1;
-                    projectile->damage = 0.4;
+                    projectile->damage = 0.6;
                     projectile->textureAlt = projectile->sakura2;
                     projectile->textureFrozen = projectile->sakura2;    
                     projectile->textureSlowed = projectile->sakura2;
